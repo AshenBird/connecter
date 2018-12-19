@@ -49,7 +49,7 @@ export class ConnecterConfig {
     constructor(config) {
         this.baseURL = '/';
         this.timeout = 10000;
-        this.actionName = '$connect';
+        this.vuePluginName = '$connect';
         this.connectChar = '-';
         for (let key of Object.keys(config)) {
             this[key] = config[key];

@@ -36,7 +36,7 @@ export default class Connecter {
         return request(api, payload);
     }
     install(Vue) {
-        Vue.prototype[this.config.actionName] = this.action.bind(this);
+        Vue.prototype[this.config.vuePluginName] = this.action.bind(this);
         Vue.prototype.$connecter = this;
     }
 }

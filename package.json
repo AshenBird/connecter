@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/mcTree/connecter"
 },
   "devDependencies": {
     "cross-env": "^5.2.0",
