@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env tsc && node build/index.js --prod"
   },
-  "author": "mcswift@outlook.com",
+  "author": "mcswift@163.com",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0"
