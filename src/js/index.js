@@ -6,10 +6,10 @@ export default class Connecter {
         // 配置项初始化
         this.config = new ConnecterConfig(config);
         // 生成供调用的api列表
-        this.apiList = new ApiList(config);
+        this.apiList = ApiList.generator(this.config);
         // 生成用于http请求的axios实例
         // 未来准备增加对websock的支持, 采用socket.io
-        this._axios = axiosCreater(config);
+        this._axios = axiosCreater(this.config);
     }
     action(name, payload) {
         const request = (api, data) => {
@@ -23,10 +23,13 @@ export default class Connecter {
         };
         const api = this.apiList[name];
         const token = this.config.token;
+        if (!api) {
+            throw new Error(`${name} is undefined`);
+        }
         payload = api.transform(jClone(payload));
         if (api.needToken) {
             if (!!token) {
-                const { key, getter, mode } = token;
+                const { key, getter } = token;
                 payload[key] = getter();
             }
             else {

@@ -6,4 +6,5 @@ export function jClone( simpleObject ){
   }catch( e ){
     throw e
   }
+  return r;
 }

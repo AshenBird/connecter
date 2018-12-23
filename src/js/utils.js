@@ -7,5 +7,6 @@ export function jClone(simpleObject) {
     catch (e) {
         throw e;
     }
+    return r;
 }
 //# sourceMappingURL=utils.js.map
