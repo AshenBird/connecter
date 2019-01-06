@@ -3,11 +3,12 @@ import axios from 'axios'
 
 
 export default function axiosCreater(config) {
-  let { baseURL, timeout, hooks } = config;
+  let { baseURL, timeout, hooks, headers } = config;
 
   let httpServer = axios.create({
     baseURL,
-    timeout
+    timeout,
+    headers
   });
 
   // 请求拦截器

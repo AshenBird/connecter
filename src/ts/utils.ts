@@ -4,7 +4,7 @@ export function jClone( simpleObject ){
   try{
     r = parse(stringify(simpleObject));
   }catch( e ){
-    throw e
+    throw new Error('not simple Object')
   }
   return r;
 }

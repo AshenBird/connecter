@@ -104,7 +104,7 @@ async function connect(){
           url: '/example',  // <string> <required>  api路径
           alia: 'Example',  // <string> 别名，用于快速访问
           needToken:  true, // <boolen> 该访问是否需要token，默认值为 false
-          before: id => ( {id} ) // <function> 访问前置钩子，传入参数是载荷参数，返回值将用于访问的实际载荷，通常用于访问数据的预处理
+          transform: id => ( {id} ) // <function> 访问前置钩子，传入参数是载荷参数，返回值将用于访问的实际载荷，通常用于访问数据的预处理
         },
         ...
       ],
@@ -168,6 +168,21 @@ config={
      *  现在：只会根据module参数是否存在判断
      */
     mode:'simple'//
+    modules:{
+    /**
+     * 由于这一功能没有实际意义，暂时废弃这一功能
+     */
+      b: {
+        // 对象模式下不需要name字段 对象名即为name
+        example: {
+          url: '/example', // <string> <required>  api路径
+          alia: 'Example', // <string> 别名，用于快速访问
+          needToken: true, // <boolen> 该访问是否需要token，默认值为 false
+          before: id => ({ id }) // <function> 访问前置钩子，传入参数是载荷参数，返回值将用于访问的实际载荷，通常用于访问数据的预处理
+        },
+        //...
+      }
+    }
 }
 
 ```
