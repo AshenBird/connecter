@@ -1,82 +1,140 @@
-class PosterHooks{
-  beforeEach?:Function = ()=>{};
-  afterEach?:Function = ()=>{};
-  successEach?:Function = ()=>{};
-  failEach?:Function = ()=>{};
-  constructor( hooks ){
-    
-  }
-}
-
-class PosterToken{
-  getter: Function;
-  key?:string = 'api_token';
-  mode?:string;
-  constructor(token){}
-}
-
-class PosterModuleChild{
-  name: string;
-  uri: string;
-  alias?: string;
-  needToken?: boolean;
-  transform?: Function = data => data;
-  before?: Function = config => config;
-  constructor( child:PosterModuleChild ){
-    for( let key of Object.keys(child) ){
-      this[key] = child[key];
+class ConnecterHooks {
+  beforeEach?: Function = conf => {};
+  afterEach?: Function = () => {};
+  successEach?: Function = res => res;
+  failEach?: Function = e => Promise.reject(e);
+  private hookNames = new Set([
+    "beforeEach",
+    "afterEach",
+    "successEach",
+    "failEach"
+  ]);
+  constructor(hooks) {
+    for (let name in hooks) {
+      if (this.hookNames.has(name)) {
+        this[name] = hooks[name];
+      }
     }
   }
 }
 
-class Api{
-  name: string;
+class ConnecterToken {
+  getter: Function|string;
+  key?: string = "api_token";
+  mode?: string;
+  isCache?: boolean = false;
+  private tokenNames = new Set(["getter", "key", "mode", "isCache"]);
+  constructor(token: ConnecterToken) {
+    for (let name in token) {
+      if (this.tokenNames.has(name)) {
+        this[name] = token[name];
+      }
+    }
+    if(this.isCache && this.getter instanceof Function ){
+      this.getter = this.getter();
+    }
+  }
+}
+
+class Api {
+  name?: string;
   uri: string;
   moduleName?: string;
   alias?: string;
   needToken?: boolean;
   transform?: Function = data => data;
   before?: Function = config => config;
-  constructor( child:PosterModuleChild ){
-    for( let key of Object.keys(child) ){
+  constructor(child: Api) {
+    for (let key of Object.keys(child)) {
       this[key] = child[key];
     }
   }
 }
 
-export class ApiList{
-  [name:string]:Api;
-  constructor(config:ConnecterConfig){
-    for ( let moduleName in config.modules ){
-      for ( let api of config.modules[moduleName] ){
-        this[`${moduleName}${config.connectChar}${api.name}`] = api;
-        if (api.alias) {
-          this[api.alias] = api;
-        }
+// class ConnecterModuleItem {
+//   // [moduleItem: string]: Api;
+//   [moduleItem: number]: Api;
+//   constructor(child: ConnecterModuleItem) {
+//     for (let key of Object.keys(child)) {
+//       this[key] = child[key];
+//     }
+//   }
+// }
+
+class ConnecterModules {
+  // [name: string]: ConnecterModuleItem;
+  [name: string]: Array<Api>;
+  constructor(modules) {}
+}
+
+export class ConnecterConfig {
+  env?: string = "vue";
+  baseURL?: string = "/";
+  timeout?: number = 10000;
+  vuePluginName?: string = "$connect";
+  connectChar?: string = "-";
+  mode?: string = "";
+  modules?: ConnecterModules;
+  token?: ConnecterToken;
+  hooks?: ConnecterHooks;
+  constructor(config: ConnecterConfig) {
+    for (let key of Object.keys(config)) {
+      switch (key) {
+        case "token":
+          this[key] = new ConnecterToken(config[key]);
+          break;
+        case "hooks":
+          this[key] = new ConnecterHooks(config[key]);
+          break;
+        default:
+          this[key] = config[key];
       }
     }
   }
 }
 
-class PosterModules{
-  [name: string]: Array<PosterModuleChild>;
-  constructor(modules){
-  }
-}
+export class ApiList {
+  list: Object;
+  // [name:string]: Api|Function;
 
-export class ConnecterConfig{
-  baseURL?:string = '/';
-  timeout?: number = 10000;
-  vuePluginName?:string = '$connect';
-  connectChar?:string = '-';
-//  mode?:string = '';
-//  headers?: HttpRequestHeader = new HttpRequestHeader();
-  modules?: PosterModules;
-  token?: PosterToken;
-  hooks?: PosterHooks;
-  constructor(config:ConnecterConfig){
-    for( let key of Object.keys(config) ){
-      this[key] = config[key];
+  constructor(config: ConnecterConfig) {
+    this.list = this.generator(config);
+  }
+  // get [name](){
+  //   return this.list[name]
+  // }
+  private moduleModeInit(config) {
+    let r = {};
+    const modules = config.modules;
+    // 遍历 modules
+    for (let moduleName in modules) {
+      let moduleItem = modules[moduleName];
+      // 遍历 module<Array>
+      for (let api of moduleItem) {
+        r[`${moduleName}${config.connectChar}${api.name}`] = new Api(api);
+        if (api.alias) {
+          r[api.alias] = new Api(api);
+        }
+      }
+    }
+    return r;
+  }
+  // private modulesInit( module ) {}
+  private simpleModeInit(config) {
+    return {};
+  }
+  private generator(config: ConnecterConfig) {
+    if (!!config.modules && Object.keys(config.modules).length >= 0) {
+      config.mode = "module";
+    } else {
+      config.mode = "simple";
+    }
+
+    switch (config.mode) {
+      case "module":
+        return this.moduleModeInit(config);
+      case "simple":
+        return this.simpleModeInit(config);
     }
   }
 }

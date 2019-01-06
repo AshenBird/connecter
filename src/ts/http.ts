@@ -3,14 +3,15 @@ import axios from 'axios'
 
 
 export default function axiosCreater(config) {
-  let { baseURL, timeout, hooks } = config;
+  let { baseURL, timeout, hooks, headers } = config;
 
   let httpServer = axios.create({
     baseURL,
-    timeout
+    timeout,
+    headers
   });
-  // 请求拦截器
 
+  // 请求拦截器
   httpServer.interceptors.request.use(
     config => {
       hooks.beforeEach(config);
@@ -25,15 +26,13 @@ export default function axiosCreater(config) {
   // response 拦截器
   httpServer.interceptors.response.use(
     res => {
-      hooks.afterEach(res);
-      hooks.successEach(res);
-      return res;
+      hooks.afterEach();
+      return hooks.successEach(res);
     },
     e => {
       console.error(e);
-      hooks.afterEach(e);
-      hooks.failEach(e);
-      return Promise.reject(e);
+      hooks.afterEach();
+      return hooks.failEach(e);
     }
   );
   return httpServer;

@@ -5,7 +5,8 @@ export function jClone(simpleObject) {
         r = parse(stringify(simpleObject));
     }
     catch (e) {
-        throw e;
+        throw new Error('not simple Object');
     }
+    return r;
 }
 //# sourceMappingURL=utils.js.map
