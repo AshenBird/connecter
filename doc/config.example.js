@@ -90,5 +90,4 @@ let config = {
     // 访问失败时的全局钩子
     failEach: e => Promise.reject(e)
   },
-
 }

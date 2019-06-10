@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "cross-env tsc && node build/index.js --prod",
-    "prepublish":"npm run build"
+    "prepublish": "npm run build"
   },
   "author": "mcswift@163.com",
   "license": "MIT",
