@@ -4,27 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env tsc && node build/index.js --prod",
+    "build": "tsc && node build/index.js --prod",
     "prepublish": "npm run build"
   },
   "author": "mcswift@163.com",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "0.19.2"
   },
   "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">= 10.12.0",
+    "npm": ">= 6.4.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mcTree/connecter"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0",
-    "lodash": "^4.17.11",
-    "typescript": "^3.2.2",
-    "webpack": "^4.27.1",
-    "webpack-merge": "^4.1.5"
+    "lodash": "4.17.15",
+    "typescript": "3.9.3",
+    "webpack": "4.43.0",
+    "webpack-merge": "4.2.2"
   }
 }
