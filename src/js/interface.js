@@ -32,24 +32,27 @@ class ConnecterToken {
         }
     }
 }
+class ApiValidatItem {
+}
+class ApiValidat {
+    constructor(validats) {
+        for (const name in validats) {
+            this.name = validats[name];
+        }
+    }
+}
 class Api {
+    // validat?: ApiValidat
     constructor(child) {
         this.transform = data => data;
         this.before = config => config;
+        this.after = res => res;
+        this.extra = {};
         for (let key of Object.keys(child)) {
             this[key] = child[key];
         }
     }
 }
-// class ConnecterModuleItem {
-//   // [moduleItem: string]: Api;
-//   [moduleItem: number]: Api;
-//   constructor(child: ConnecterModuleItem) {
-//     for (let key of Object.keys(child)) {
-//       this[key] = child[key];
-//     }
-//   }
-// }
 class ConnecterModules {
     constructor(modules) { }
 }

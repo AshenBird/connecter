@@ -105,6 +105,8 @@ async function connect(){
           alia: 'Example',  // <string> 别名，用于快速访问
           needToken:  true, // <boolen> 该访问是否需要token，默认值为 false
           transform: id => ( {id} ) // <function> 访问前置钩子，传入参数是载荷参数，返回值将用于访问的实际载荷，通常用于访问数据的预处理
+          extra: {} // 额外的信息,主要用于给全局钩子提供额外的信息
+          after: config => config
         },
         ...
       ],

@@ -12,38 +12,37 @@ export default class Connecter {
         this._axios = axiosCreater(this.config);
     }
     // 或许我应该在初始化时就尽量完成提交行为的结构
-    action(name, payload) {
-        const request = (api, data) => {
-            const { url, before } = api;
-            const config = {
-                method: "post",
-                url,
-                data
-            };
-            return this._axios(before(config));
-        };
+    action(name, payload = {}) {
+        // 找到接口
         const api = this.apiList.list[name];
-        const token = this.config.token;
         if (!api) {
-            throw new Error(`${name} is undefined`);
+            throw new Error(`Api ${name} is undefined`);
         }
-        payload = api.transform(jClone(payload));
-        if (api.needToken) {
-            if (!!token) {
-                const { key, getter } = token;
-                if (typeof getter === 'string') {
-                    payload[key] = getter;
-                }
-                else {
-                    payload[key] = getter();
-                }
+        // 初始化相应数据
+        let _payload = jClone(payload); // 隔绝相应数据
+        let token = this.config.token;
+        const { transform, url, before, needToken, extra } = api;
+        _payload = transform(_payload);
+        if (needToken) {
+            if (!token)
+                throw new Error('token is undefined');
+            const { key, getter } = token;
+            if (typeof getter === 'string') {
+                payload[key] = getter;
             }
             else {
-                throw new Error('token is undefined');
+                payload[key] = getter();
             }
         }
-        return request(api, payload);
+        const requestConfig = {
+            method: "post",
+            url,
+            data: payload,
+            extra
+        };
+        return this._axios(before(requestConfig));
     }
+    test() { }
     install(Vue) {
         Vue.prototype[this.config.vuePluginName] = this.action.bind(this);
         Vue.prototype.$connecter = this;

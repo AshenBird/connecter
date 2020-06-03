@@ -36,6 +36,21 @@ class ConnecterToken {
   }
 }
 
+class ApiValidatItem{
+  type?:string
+  required?: boolean
+  default?: any
+}
+
+class ApiValidat {
+  [ name:string ]: ApiValidatItem | Function
+  constructor( validats:ApiValidat ){
+    for( const name in validats ){
+      this.name = validats[ name ]
+    }
+  }
+}
+
 class Api {
   name?: string;
   uri: string;
@@ -44,22 +59,15 @@ class Api {
   needToken?: boolean;
   transform?: Function = data => data;
   before?: Function = config => config;
+  after?: Function = res => res;
+  extra?: Object = {}
+  // validat?: ApiValidat
   constructor(child: Api) {
     for (let key of Object.keys(child)) {
       this[key] = child[key];
     }
   }
 }
-
-// class ConnecterModuleItem {
-//   // [moduleItem: string]: Api;
-//   [moduleItem: number]: Api;
-//   constructor(child: ConnecterModuleItem) {
-//     for (let key of Object.keys(child)) {
-//       this[key] = child[key];
-//     }
-//   }
-// }
 
 class ConnecterModules {
   // [name: string]: ConnecterModuleItem;
